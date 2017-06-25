@@ -169,25 +169,44 @@ namespace nomic {
 			__in nomic::terrain::chunk &chunk
 			)
 		{
+			bool top = true;
 
 			for(int32_t y = BLOCK_HEIGHT_WATER; y >= 0; --y) {
 
 				if(!y) { // boundary
 					chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_BOUNDARY,
 						BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
-				} else if(position.y >= BLOCK_HEIGHT_GRASS) { // above-water
+				} else if(position.y >= BLOCK_HEIGHT_DIRT) { // above-water
 
-					// TODO
-					chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
-					// ---
+					if(position.y >= BLOCK_HEIGHT_STONE) { // stone (inside mountain)
+						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
+					} else {
+
+						if((y <= position.y) && (y > (position.y - BLOCK_DEPTH_DIRT))) { // dirt/stone
+
+							if(top) { // grass
+								top = false;
+								chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_GRASS);
+							} else { // dirt/stone
+								chunk.set_block(glm::uvec3(position.x, y, position.z), chunk_block_blend(y,
+									(position.y - BLOCK_DEPTH_DIRT), position.y, BLOCK_DIRT, BLOCK_STONE));
+							}
+						} else { // stone
+							chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
+						}
+					}
 
 				} else { // underwater
 
-					if(y == position.y) { // sand
-						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_SAND);
-					} else if((y < position.y) && (y > (position.y - BLOCK_DEPTH_SAND))) { // sand/stone
-						chunk.set_block(glm::uvec3(position.x, y, position.z), chunk_block_blend(y, BLOCK_HEIGHT_MIN,
-							position.y, BLOCK_SAND, BLOCK_STONE));
+					if((y <= position.y) && (y > (position.y - BLOCK_DEPTH_SAND))) { // sand/stone
+
+						if(top) { // sand
+							top = false;
+							chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_SAND);
+						} else { // sand/stone
+							chunk.set_block(glm::uvec3(position.x, y, position.z), chunk_block_blend(y,
+								(position.y - BLOCK_DEPTH_SAND), position.y, BLOCK_SAND, BLOCK_STONE));
+						}
 					} else if(y < position.y) { // stone
 						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
 					} else { // water

@@ -47,11 +47,9 @@ namespace nomic {
 	#define BLOCK_DEPTH_DIRT 20
 	#define BLOCK_DEPTH_SAND 10
 
-	#define BLOCK_HEIGHT_GRASS 68
-	#define BLOCK_HEIGHT_GRAVEL 86
+	#define BLOCK_HEIGHT_DIRT 68
 	#define BLOCK_HEIGHT_MAX 120
 	#define BLOCK_HEIGHT_MIN 20
-	#define BLOCK_HEIGHT_SNOW 106
 	#define BLOCK_HEIGHT_STONE 100
 	#define BLOCK_HEIGHT_WATER 64
 
@@ -92,12 +90,11 @@ namespace nomic {
 		BLOCK_WATER,
 		BLOCK_SAND,
 		BLOCK_DIRT,
-		BLOCK_GRAVEL,
 		BLOCK_STONE,
-		BLOCK_SNOW,
+		BLOCK_GRASS,
 	};
 
-	#define BLOCK_MAX BLOCK_SNOW
+	#define BLOCK_MAX BLOCK_GRASS
 
 	enum {
 		BLOCK_ATTRIBUTE_STATIC = 1,
@@ -110,9 +107,8 @@ namespace nomic {
 		{ 19, 89, 226, }, // water
 		{ 239, 235, 122, }, // sand
 		{ 87, 52, 48, }, // dirt
-		{ 145, 126, 98, }, // gravel
 		{ 82, 82, 82, }, // stone
-		{ 238, 238, 238, }, // snow
+		{ 78, 154, 6, }, // grass
 		};
 
 	#define BLOCK_COLOR(_TYPE_) \
