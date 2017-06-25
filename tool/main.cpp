@@ -33,10 +33,6 @@ main(void)
 		// TODO
 		#define COUNT 10
 		#define COLORIZE true
-		#define BLOCK_HEIGHT_GRASS 68
-		#define BLOCK_HEIGHT_GRAVEL 86
-		#define BLOCK_HEIGHT_STONE 100
-		#define BLOCK_HEIGHT_WATER 64
 
 		nomic::terrain::generator gen;
 		nomic::terrain::chunk ch[COUNT][COUNT];
@@ -61,63 +57,9 @@ main(void)
 		for(int32_t z = 0; z < (COUNT * CHUNK_WIDTH); ++z) {
 
 			for(int32_t x = 0; x < (COUNT * CHUNK_WIDTH); ++x) {
-				uint16_t scale;
-				uint8_t height = ch[x / CHUNK_WIDTH][z / CHUNK_WIDTH].height(glm::uvec2(x % CHUNK_WIDTH, z % CHUNK_WIDTH));
-
-				if(COLORIZE) {
-
-					if(height <= BLOCK_HEIGHT_WATER) {
-						scale = (19 * (height / (double) BLOCK_HEIGHT_WATER));
-						file << scale << " ";
-						scale = (89 * (height / (double) BLOCK_HEIGHT_WATER));
-						file << scale << " ";
-						scale = (226 * (height / (double) BLOCK_HEIGHT_WATER));
-						file << scale << " ";
-					} else if((height > BLOCK_HEIGHT_WATER) && (height <= BLOCK_HEIGHT_GRASS)) {
-						scale = (239 - (161 * ((height - BLOCK_HEIGHT_WATER)
-							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
-						file << scale << " ";
-						scale = (235 - (81 * ((height - BLOCK_HEIGHT_WATER)
-							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
-						file << scale << " ";
-						scale = (122 - (116 * ((height - BLOCK_HEIGHT_WATER)
-							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
-						file << scale << " ";
-					} else if((height > BLOCK_HEIGHT_GRASS) && (height <= BLOCK_HEIGHT_GRAVEL)) {
-						scale = (78 + (67 * ((height - BLOCK_HEIGHT_GRASS)
-							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
-						file << scale << " ";
-						scale = (154 - (28 * ((height - BLOCK_HEIGHT_GRASS)
-							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
-						file << scale << " ";
-						scale = (6 + (76 * ((height - BLOCK_HEIGHT_GRASS)
-							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
-						file << scale << " ";
-					} else if((height > BLOCK_HEIGHT_GRAVEL) && (height <= BLOCK_HEIGHT_STONE)) {
-						scale = (145 - (63 * ((height - BLOCK_HEIGHT_GRAVEL)
-							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
-						file << scale << " ";
-						scale = (126 - (44 * ((height - BLOCK_HEIGHT_GRAVEL)
-							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
-						file << scale << " ";
-						scale = (98 - (16 * ((height - BLOCK_HEIGHT_GRAVEL)
-							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
-						file << scale << " ";
-					} else {
-						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
-							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
-						file << scale << " ";
-						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
-							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
-						file << scale << " ";
-						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
-							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
-						file << scale << " ";
-					}
-				} else {
-					scale = (255 * (height	/ (double) CHUNK_HEIGHT));
-					file << scale << " " << scale << " " << scale << " ";
-				}
+				uint8_t height = ch[x / CHUNK_WIDTH][z / CHUNK_WIDTH].height(glm::uvec2(x % CHUNK_WIDTH, z % CHUNK_WIDTH)),
+					type = ch[x / CHUNK_WIDTH][z / CHUNK_WIDTH].type(glm::uvec3(x % CHUNK_WIDTH, height, z % CHUNK_WIDTH));
+				file << (int) BLOCK_COLOR(type)[0] << " " << (int) BLOCK_COLOR(type)[1] << " " << (int) BLOCK_COLOR(type)[2] << " ";
 			}
 
 			file << std::endl;

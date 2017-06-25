@@ -20,6 +20,7 @@
 #define NOMIC_TERRAIN_GENERATOR_H_
 
 #include "../core/noise.h"
+#include "../core/random.h"
 #include "./chunk.h"
 
 namespace nomic {
@@ -70,7 +71,22 @@ namespace nomic {
 
 			protected:
 
+				uint32_t chunk_block_blend(
+					__in uint32_t position,
+					__in uint32_t min,
+					__in uint32_t max,
+					__in uint32_t a,
+					__in uint32_t b
+					);
+
+				void chunk_column(
+					__in const glm::uvec3 &position,
+					__in nomic::terrain::chunk &chunk
+					);
+
 				uint32_t m_max;
+
+				nomic::core::random<double> m_random;
 		};
 	}
 }

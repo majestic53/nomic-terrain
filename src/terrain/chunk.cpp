@@ -140,7 +140,7 @@ namespace nomic {
 			__in_opt uint8_t attributes
 			)
 		{
-			uint8_t height;
+			int8_t height;
 
 			if((position.x >= CHUNK_WIDTH) || (position.y >= CHUNK_HEIGHT) || (position.z >= CHUNK_WIDTH)) {
 				THROW_NOMIC_TERRAIN_CHUNK_EXCEPTION_FORMAT(NOMIC_TERRAIN_CHUNK_EXCEPTION_POSITION_INVALID,
@@ -155,7 +155,7 @@ namespace nomic {
 				--height;
 			}
 
-			m_height[position.x][position.z] = (CHUNK_HEIGHT - height);
+			m_height[position.x][position.z] = height;
 		}
 
 		void 

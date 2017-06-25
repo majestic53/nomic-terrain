@@ -43,8 +43,17 @@ namespace nomic {
 #endif // __inout_opt
 
 	#define BLOCK_ATTRIBUTES_DEFAULT (BLOCK_ATTRIBUTE_STATIC | BLOCK_ATTRIBUTE_BREAKABLE)
+
+	#define BLOCK_DEPTH_DIRT 20
+	#define BLOCK_DEPTH_SAND 10
+
+	#define BLOCK_HEIGHT_GRASS 68
+	#define BLOCK_HEIGHT_GRAVEL 86
 	#define BLOCK_HEIGHT_MAX 120
 	#define BLOCK_HEIGHT_MIN 20
+	#define BLOCK_HEIGHT_SNOW 106
+	#define BLOCK_HEIGHT_STONE 100
+	#define BLOCK_HEIGHT_WATER 64
 
 	#define CHUNK_BLOCK_COUNT (CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_WIDTH)
 	#define CHUNK_BLOCK_SURFACE_COUNT (CHUNK_WIDTH * CHUNK_WIDTH)
@@ -81,15 +90,33 @@ namespace nomic {
 		BLOCK_AIR = 0,
 		BLOCK_BOUNDARY,
 		BLOCK_WATER,
-		BLOCK_STONE,
 		BLOCK_SAND,
 		BLOCK_DIRT,
+		BLOCK_GRAVEL,
+		BLOCK_STONE,
+		BLOCK_SNOW,
 	};
+
+	#define BLOCK_MAX BLOCK_SNOW
 
 	enum {
 		BLOCK_ATTRIBUTE_STATIC = 1,
 		BLOCK_ATTRIBUTE_BREAKABLE = 2,
 	};
+
+	static const uint8_t BLOCK_COL[][3] = {
+		{ 0, 0, 0, }, // air
+		{ 40, 40, 40, }, // boundary
+		{ 19, 89, 226, }, // water
+		{ 239, 235, 122, }, // sand
+		{ 87, 52, 48, }, // dirt
+		{ 145, 126, 98, }, // gravel
+		{ 82, 82, 82, }, // stone
+		{ 238, 238, 238, }, // snow
+		};
+
+	#define BLOCK_COLOR(_TYPE_) \
+		(((_TYPE_) > nomic::BLOCK_MAX) ? nomic::BLOCK_COL[0] : nomic::BLOCK_COL[_TYPE_])
 }
 
 #endif // NOMIC_DEFINE_H_

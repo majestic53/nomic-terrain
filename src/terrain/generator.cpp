@@ -30,7 +30,8 @@ namespace nomic {
 			__in_opt uint32_t max
 			) :
 				nomic::core::noise(seed, octaves, amplitude),
-				m_max(max)
+				m_max(max),
+				m_random(seed)
 		{
 			return;
 		}
@@ -94,9 +95,105 @@ namespace nomic {
 						height = BLOCK_HEIGHT_MAX;
 					}
 
-					// TODO: generate blocks
-					chunk.set_block(glm::uvec3(x, height, z), BLOCK_BOUNDARY);
+					for(int32_t y = (CHUNK_HEIGHT - 1); y >= 0; --y) {
+
+						if(!y) {
+							chunk.set_block(glm::uvec3(x, y, z), BLOCK_BOUNDARY,
+								BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
+						} else if(y > height) {
+							chunk.set_block(glm::uvec3(x, y, z), BLOCK_AIR,
+								BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
+						} else {
+							chunk_column(glm::vec3(x, y, z), chunk);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		uint32_t 
+		generator::chunk_block_blend(
+			__in uint32_t position,
+			__in uint32_t min,
+			__in uint32_t max,
+			__in uint32_t a,
+			__in uint32_t b
+			)
+		{
+			uint32_t result;
+
+			if(min > max) {
+				THROW_NOMIC_TERRAIN_GENERATOR_EXCEPTION_FORMAT(NOMIC_TERRAIN_GENERATOR_EXCEPTION_RANGE_INVALID,
+					"Range={%u, %u}", min, max);
+			}
+
+			if(position > max) {
+				result = b;
+			} else if(position < min) {
+				result = a;
+			} else {
+				uint32_t first, second;
+				std::vector<double> interval, weight;
+
+				if(a <= b) {
+					first = a;
+					second = b;
+				} else {
+					first = b;
+					second = a;
+				}
+
+				for(uint32_t iter = first; iter <= second; ++iter) {
+					interval.push_back(iter);
+
+					if(iter == first) {
+						weight.push_back((min < max) ? ((position - min) / (double) (max - min)) : 0.5);
+					} else if(iter == second) {
+						weight.push_back((min < max) ? (1.0 - ((position - min) / (double) (max - min))) : 0.5);
+					} else {
+						weight.push_back(0.0);
+					}
+				}
+
+				result = (uint32_t) std::piecewise_linear_distribution<>(interval.begin(), interval.end(), weight.begin())(
+					m_random.generator());
+			}
+
+			return result;
+		}
+
+		void 
+		generator::chunk_column(
+			__in const glm::uvec3 &position,
+			__in nomic::terrain::chunk &chunk
+			)
+		{
+
+			for(int32_t y = BLOCK_HEIGHT_WATER; y >= 0; --y) {
+
+				if(!y) { // boundary
+					chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_BOUNDARY,
+						BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
+				} else if(position.y >= BLOCK_HEIGHT_GRASS) { // above-water
+
+					// TODO
+					chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
 					// ---
+
+				} else { // underwater
+
+					if(y == position.y) { // sand
+						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_SAND);
+					} else if((y < position.y) && (y > (position.y - BLOCK_DEPTH_SAND))) { // sand/stone
+						chunk.set_block(glm::uvec3(position.x, y, position.z), chunk_block_blend(y, BLOCK_HEIGHT_MIN,
+							position.y, BLOCK_SAND, BLOCK_STONE));
+					} else if(y < position.y) { // stone
+						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
+					} else { // water
+						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_WATER,
+							BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
+					}
 				}
 			}
 		}
@@ -123,6 +220,7 @@ namespace nomic {
 		{
 			nomic::core::noise::setup(seed, octaves, amplitude);
 			m_max = max;
+			m_random.setup(seed);
 		}
 
 		std::string 
