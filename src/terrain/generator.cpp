@@ -85,13 +85,13 @@ namespace nomic {
 					scale = std::abs(nomic::core::noise::generate(((position.x * CHUNK_WIDTH) + x) / NOISE_SCALE,
 						((position.y * CHUNK_WIDTH) + z) / NOISE_SCALE));
 
-					height = (((CHUNK_HEIGHT_MAX - CHUNK_HEIGHT_MIN) * scale) + CHUNK_HEIGHT_MIN);
-					if(height < CHUNK_HEIGHT_MIN) {
-						height = CHUNK_HEIGHT_MIN;
+					height = (((BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_MIN) * scale) + BLOCK_HEIGHT_MIN);
+					if(height < BLOCK_HEIGHT_MIN) {
+						height = BLOCK_HEIGHT_MIN;
 					}
 
-					if(height > CHUNK_HEIGHT_MAX) {
-						height = CHUNK_HEIGHT_MAX;
+					if(height > BLOCK_HEIGHT_MAX) {
+						height = BLOCK_HEIGHT_MAX;
 					}
 
 					// TODO: generate blocks

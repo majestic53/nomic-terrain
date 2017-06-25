@@ -33,7 +33,8 @@ main(void)
 		// TODO
 		#define COUNT 10
 		#define COLORIZE true
-		#define BLOCK_HEIGHT_GRASS 66
+		#define BLOCK_HEIGHT_GRASS 68
+		#define BLOCK_HEIGHT_GRAVEL 86
 		#define BLOCK_HEIGHT_STONE 100
 		#define BLOCK_HEIGHT_WATER 64
 
@@ -66,32 +67,51 @@ main(void)
 				if(COLORIZE) {
 
 					if(height <= BLOCK_HEIGHT_WATER) {
-						scale = (19 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (19 * (height / (double) BLOCK_HEIGHT_WATER));
 						file << scale << " ";
-						scale = (89 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (89 * (height / (double) BLOCK_HEIGHT_WATER));
 						file << scale << " ";
-						scale = (226 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (226 * (height / (double) BLOCK_HEIGHT_WATER));
 						file << scale << " ";
 					} else if((height > BLOCK_HEIGHT_WATER) && (height <= BLOCK_HEIGHT_GRASS)) {
-						scale = (239 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (239 - (161 * ((height - BLOCK_HEIGHT_WATER)
+							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
 						file << scale << " ";
-						scale = (235 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (235 - (81 * ((height - BLOCK_HEIGHT_WATER)
+							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
 						file << scale << " ";
-						scale = (122 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (122 - (116 * ((height - BLOCK_HEIGHT_WATER)
+							/ (double) (BLOCK_HEIGHT_GRASS - BLOCK_HEIGHT_WATER))));
 						file << scale << " ";
-					} else if((height > BLOCK_HEIGHT_GRASS) && (height <= BLOCK_HEIGHT_STONE)) {
-						scale = (48 * (height	/ (double) BLOCK_HEIGHT_WATER));
+					} else if((height > BLOCK_HEIGHT_GRASS) && (height <= BLOCK_HEIGHT_GRAVEL)) {
+						scale = (78 + (67 * ((height - BLOCK_HEIGHT_GRASS)
+							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
 						file << scale << " ";
-						scale = (104 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (154 - (28 * ((height - BLOCK_HEIGHT_GRASS)
+							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
 						file << scale << " ";
-						scale = (20 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (6 + (76 * ((height - BLOCK_HEIGHT_GRASS)
+							/ (double) (BLOCK_HEIGHT_GRAVEL - BLOCK_HEIGHT_GRASS))));
+						file << scale << " ";
+					} else if((height > BLOCK_HEIGHT_GRAVEL) && (height <= BLOCK_HEIGHT_STONE)) {
+						scale = (145 - (63 * ((height - BLOCK_HEIGHT_GRAVEL)
+							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
+						file << scale << " ";
+						scale = (126 - (44 * ((height - BLOCK_HEIGHT_GRAVEL)
+							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
+						file << scale << " ";
+						scale = (98 - (16 * ((height - BLOCK_HEIGHT_GRAVEL)
+							/ (double) (BLOCK_HEIGHT_STONE - BLOCK_HEIGHT_GRAVEL))));
 						file << scale << " ";
 					} else {
-						scale = (82 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
+							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
 						file << scale << " ";
-						scale = (82 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
+							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
 						file << scale << " ";
-						scale = (82 * (height	/ (double) BLOCK_HEIGHT_WATER));
+						scale = (82 + (156 * ((height - BLOCK_HEIGHT_STONE)
+							/ (double) (BLOCK_HEIGHT_MAX - BLOCK_HEIGHT_STONE))));
 						file << scale << " ";
 					}
 				} else {
