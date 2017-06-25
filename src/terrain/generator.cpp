@@ -178,8 +178,14 @@ namespace nomic {
 						BLOCK_ATTRIBUTE_STATIC | ~BLOCK_ATTRIBUTE_BREAKABLE);
 				} else if(position.y >= BLOCK_HEIGHT_DIRT) { // above-water
 
-					if(position.y >= BLOCK_HEIGHT_STONE) { // stone (inside mountain)
-						chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
+					if(position.y >= BLOCK_HEIGHT_STONE) { // snow/stone
+
+						if(top && (position.y >= BLOCK_HEIGHT_SNOW)) {
+							top = false;
+							chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_SNOW);
+						} else {
+							chunk.set_block(glm::uvec3(position.x, y, position.z), BLOCK_STONE);
+						}
 					} else {
 
 						if((y <= position.y) && (y > (position.y - BLOCK_DEPTH_DIRT))) { // dirt/stone
